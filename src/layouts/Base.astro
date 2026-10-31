@@ -1,0 +1,199 @@
+---
+import '../styles/global.css';
+import Icon from '../components/Icon.astro';
+import { NEGOCIO, SEDES, SERVICIOS, waLink } from '../data/site';
+
+interface Props { title?: string; description?: string }
+const {
+  title = 'Gail Girls · Salón de uñas, cejas y pestañas en Comas',
+  description = 'Uñas acrílicas, polygel, softgel, baby boomer, extensiones de pestañas desde S/ 55, cejas y más. Dos sedes en Comas: Santa Luzmila y La Pascana. Abierto todos los días. Reserva por WhatsApp.',
+} = Astro.props;
+
+const nav = [
+  { href: '#servicios', label: 'Servicios' },
+  { href: '#disenos', label: 'Diseños' },
+  { href: '#promos', label: 'Promos' },
+  { href: '#nosotras', label: 'Nosotras' },
+  { href: '#sedes', label: 'Sedes' },
+  { href: '#contacto', label: 'Contacto' },
+];
+const waHola = waLink('¡Hola Gail Girls! 💅 Quisiera reservar una cita.');
+const ogImage = new URL('/assets/img/hero-baby-boomer.webp', Astro.site).href;
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'NailSalon',
+  name: NEGOCIO.nombre,
+  telephone: '+' + NEGOCIO.whatsapp,
+  email: NEGOCIO.correo,
+  priceRange: '$',
+  sameAs: [NEGOCIO.instagram, NEGOCIO.facebook],
+  openingHours: 'Mo-Su 10:00-20:00',
+  department: SEDES.map((s) => ({
+    '@type': 'NailSalon',
+    name: `${NEGOCIO.nombre} · ${s.nombre}`,
+    address: { '@type': 'PostalAddress', streetAddress: s.direccion, addressLocality: 'Comas', addressRegion: 'Lima', addressCountry: 'PE' },
+  })),
+};
+---
+<!doctype html>
+<html lang="es-PE" class="no-js">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <meta name="theme-color" content="#fff8f6" />
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="es_PE" />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:image" content={ogImage} />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..600&family=Outfit:wght@300..600&display=swap" rel="stylesheet" />
+  <link rel="preload" as="image" href="/assets/img/hero-baby-boomer.webp" />
+  <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+  <script is:inline>document.documentElement.classList.remove('no-js');</script>
+</head>
+<body>
+  <a class="sr-only" href="#main">Ir al contenido</a>
+
+  <div class="topbar">
+    <div class="wrap">
+      <div class="topbar-info">
+        <span><Icon name="clock" />{NEGOCIO.horarioCorto}</span>
+        <a href={waHola} target="_blank" rel="noopener"><Icon name="whatsapp" />{NEGOCIO.telefono}</a>
+        <span class="hide-sm"><Icon name="pin" />Santa Luzmila · La Pascana, Comas</span>
+      </div>
+      <div class="topbar-social">
+        <a href={NEGOCIO.instagram} target="_blank" rel="noopener" aria-label="Instagram de Gail Girls"><Icon name="instagram" /></a>
+        <a href={NEGOCIO.facebook} target="_blank" rel="noopener" aria-label="Facebook de Gail Girls"><Icon name="facebook" /></a>
+      </div>
+    </div>
+  </div>
+
+  <header class="header" id="header">
+    <div class="wrap">
+      <a class="brand" href="#inicio" aria-label="Gail Girls, ir al inicio">
+        <img src="/assets/img/logo-mark.png" alt="" width="226" height="259" />
+        <span class="brand-text"><strong>Gail Girls</strong><small>By Abby Pardo</small></span>
+      </a>
+      <nav class="nav" aria-label="Principal">
+        {nav.map((n) => <a href={n.href}>{n.label}</a>)}
+      </nav>
+      <button class="btn btn-ghost btn-sm cita-btn" type="button" data-open-cita aria-label="Ver mi cita">
+        <Icon name="calendar" /><span class="hide-xs">Mi cita</span>
+        <span class="cita-count" data-cita-count aria-hidden="true">0</span>
+      </button>
+      <a class="btn btn-primary btn-sm btn-reservar" href="#reservar">Reservar cita <Icon name="arrow" /></a>
+      <button class="menu-toggle" type="button" data-menu-open aria-label="Abrir menú" aria-expanded="false" aria-controls="mobile-nav"><Icon name="menu" /></button>
+    </div>
+  </header>
+
+  <div class="mobile-nav" id="mobile-nav" aria-hidden="true">
+    <div class="mobile-nav-top">
+      <span class="brand"><img src="/assets/img/logo-mark.png" alt="" width="226" height="259" style="height:44px" /><span class="brand-text"><strong>Gail Girls</strong><small>By Abby Pardo</small></span></span>
+      <button class="icon-btn" type="button" data-menu-close aria-label="Cerrar menú"><Icon name="close" /></button>
+    </div>
+    {nav.map((n) => <a class="link" href={n.href} data-menu-link>{n.label}</a>)}
+    <a class="btn btn-wa" href={waHola} target="_blank" rel="noopener"><Icon name="whatsapp" />Escríbenos por WhatsApp</a>
+  </div>
+
+  <main id="main">
+    <slot />
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <img src="/assets/img/logo-gailgirls.png" alt="Gail Girls By Abby Pardo" width="585" height="472" />
+          <p>Expertas en uñas, cejas y pestañas en Comas, Lima Norte. Aquí cada clienta es una reina. 👑</p>
+        </div>
+        <div>
+          <h4>Servicios</h4>
+          <ul>
+            <li><a href="#servicios" data-tab-link="unas">Uñas</a></li>
+            <li><a href="#servicios" data-tab-link="pies">Pedicure</a></li>
+            <li><a href="#servicios" data-tab-link="pestanas">Pestañas</a></li>
+            <li><a href="#servicios" data-tab-link="cejas">Cejas</a></li>
+            <li><a href="#servicios" data-tab-link="rostro">Faciales y depilación</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Sedes</h4>
+          <ul>
+            {SEDES.map((s) => <li><a href="#sedes">{s.nombre}<br /><small>{s.direccion}</small></a></li>)}
+          </ul>
+        </div>
+        <div>
+          <h4>Contacto</h4>
+          <ul>
+            <li><a href={waHola} target="_blank" rel="noopener">WhatsApp {NEGOCIO.telefono}</a></li>
+            <li><a href={`mailto:${NEGOCIO.correo}`}>{NEGOCIO.correo}</a></li>
+            <li><a href={NEGOCIO.instagram} target="_blank" rel="noopener">Instagram @gailgirls</a></li>
+            <li><a href={NEGOCIO.facebook} target="_blank" rel="noopener">Facebook Gail Girls</a></li>
+            <li>{NEGOCIO.horarioCorto}</li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© {new Date().getFullYear()} Gail Girls · By Abby Pardo · Comas, Lima</span>
+        <span>Hecho con 💕 para nuestras reinas</span>
+      </div>
+    </div>
+  </footer>
+
+  <a class="wa-float" href={waHola} target="_blank" rel="noopener" aria-label="Escríbenos por WhatsApp"><Icon name="whatsapp" /></a>
+  <div class="mobile-bar">
+    <button class="btn btn-ghost cita-btn" type="button" data-open-cita><Icon name="calendar" />Mi cita<span class="cita-count" data-cita-count aria-hidden="true">0</span></button>
+    <a class="btn btn-wa" href={waHola} target="_blank" rel="noopener"><Icon name="whatsapp" />WhatsApp</a>
+  </div>
+
+  <!-- Mi cita: los servicios elegidos se envían juntos por WhatsApp -->
+  <div class="overlay" data-cita-overlay></div>
+  <aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="drawer-title" aria-hidden="true">
+    <div class="drawer-head">
+      <h2 id="drawer-title">Mi cita</h2>
+      <button class="icon-btn" type="button" data-close-cita aria-label="Cerrar"><Icon name="close" /></button>
+    </div>
+    <div class="drawer-body">
+      <div class="drawer-empty" data-cita-empty>
+        <Icon name="calendar" />
+        <p>Aún no agregas servicios.<br />Elige lo que quieres hacerte y te lo reservamos por WhatsApp.</p>
+        <a class="btn btn-ghost btn-sm" href="#servicios" data-close-cita style="margin-top:16px">Ver servicios</a>
+      </div>
+      <ul class="cita-list" data-cita-list></ul>
+      <form class="drawer-form" data-cita-form>
+        <div class="field">
+          <label for="cita-nombre">Tu nombre</label>
+          <input id="cita-nombre" name="nombre" autocomplete="given-name" placeholder="¿Cómo te llamas?" />
+        </div>
+        <div class="field">
+          <label for="cita-sede">Sede</label>
+          <select id="cita-sede" name="sede">
+            {SEDES.map((s) => <option value={s.nombre}>{s.nombre}</option>)}
+          </select>
+        </div>
+        <div class="field">
+          <label for="cita-fecha">Día que prefieres</label>
+          <input id="cita-fecha" name="fecha" type="date" />
+        </div>
+      </form>
+    </div>
+    <div class="drawer-foot">
+      <button class="btn btn-wa" type="button" data-cita-send><Icon name="whatsapp" />Reservar por WhatsApp</button>
+      <p>Te confirmamos horario, precio y disponibilidad por chat.</p>
+    </div>
+  </aside>
+
+  <div class="toast" role="status" aria-live="polite" data-toast><span data-toast-text></span><button type="button" data-open-cita>Ver mi cita</button></div>
+
+  <script type="application/json" id="servicios-data" set:html={JSON.stringify(SERVICIOS.map(({ id, nombre, precio }) => ({ id, nombre, precio })))} />
+  <script>
+    import '../scripts/main.ts';
+  </script>
+</body>
+</html>

@@ -1,0 +1,356 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import { NEGOCIO, SEDES, CATEGORIAS, SERVICIOS, DISENOS, FILTROS_DISENO, EQUIPO, waLink } from '../data/site';
+
+const nombreServicio = (id: string) => SERVICIOS.find((s) => s.id === id)?.nombre ?? '';
+const mapaEmbed = (q: string) => `https://www.google.com/maps?q=${encodeURIComponent(q)}&output=embed`;
+const mapaLink = (q: string) => `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(q)}`;
+
+const formas = [
+  { nombre: 'Ballerina', alias: 'Coffin', d: 'M9 3h6l2 15c0 2-2 3-5 3s-5-1-5-3L9 3Z' },
+  { nombre: 'Almendrada', alias: 'Delicada y femenina', d: 'M12 2c3 2 5 7 5 12 0 4-2 7-5 7s-5-3-5-7c0-5 2-10 5-12Z' },
+  { nombre: 'Cuadrada', alias: 'Clásica y moderna', d: 'M7 3h10v15c0 2-2 3-5 3s-5-1-5-3V3Z' },
+  { nombre: 'Stiletto', alias: 'Atrevida', d: 'M12 1 17 15c0 4-2 6-5 6s-5-2-5-6L12 1Z' },
+];
+
+const faq = [
+  { q: '¿Puedo llevar mi propio diseño?', a: '¡Claro! Envíanos la foto de referencia por WhatsApp o tráela el día de tu cita y la hacemos realidad.' },
+  { q: '¿Qué días atienden?', a: `Atendemos ${NEGOCIO.horario.toLowerCase()}, en nuestras dos sedes de Comas.` },
+  { q: '¿Cuánto cuesta un set de uñas?', a: 'El precio depende de la técnica, el largo y el diseño que elijas. Escríbenos con tu idea o la foto del modelo y te cotizamos al toque. Las extensiones de pestañas están desde S/ 55.' },
+  { q: '¿Polygel o softgel: cuál me conviene?', a: 'Depende de tu uña natural, el largo que quieres y tu día a día. En tu cita te asesoramos para que elijas la mejor opción.' },
+  { q: '¿Qué medios de pago aceptan?', a: 'Te confirmamos los medios de pago disponibles al momento de reservar por WhatsApp.' },
+  { q: '¿Tienen promociones?', a: 'Sí, tenemos catálogo con modelos en promo. Pregúntanos por las promos vigentes y síguenos en Instagram para enterarte primero.' },
+];
+---
+<Base>
+  <!-- HERO -->
+  <section class="hero" id="inicio">
+    <div class="wrap">
+      <div class="hero-text">
+        <span class="eyebrow">Salón de uñas, cejas y pestañas · Comas</span>
+        <h1>Tus manos merecen trato de <em>reina</em></h1>
+        <p class="hero-lead">En Gail Girls hacemos realidad el diseño que imaginas: acrílicas, polygel, softgel, francés, baby boomer y extensiones de pestañas. Dos sedes en Lima Norte, abiertas todos los días.</p>
+        <div class="hero-cta">
+          <a class="btn btn-primary" href="#reservar"><Icon name="calendar" />Reservar mi cita</a>
+          <a class="btn btn-ghost" href="#disenos"><Icon name="sparkle" />Ver diseños</a>
+        </div>
+        <div class="hero-proof">
+          <div><strong>+11 mil</strong><span>seguidores en Facebook</span></div>
+          <div><strong>2 sedes</strong><span>Santa Luzmila y La Pascana</span></div>
+          <div><strong>7 días</strong><span>de 10 a. m. a 8 p. m.</span></div>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="hero-photo">
+          <img src="/assets/img/hero-baby-boomer.webp" alt="Uñas baby boomer con flores en relieve hechas en Gail Girls" width="1100" height="1375" fetchpriority="high" />
+        </div>
+        <div class="hero-chip">Baby boomer <b>en promo</b></div>
+        <div class="hero-badge">
+          <span class="ico"><Icon name="image" /></span>
+          <div><strong>¿Tienes tu diseño?</strong><span>Tráelo y lo hacemos realidad</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESERVA RÁPIDA -->
+  <div class="wrap" id="reservar">
+    <div class="booking reveal">
+      <div class="booking-head">
+        <h2>Reserva en 1 minuto</h2>
+        <p>Te respondemos por WhatsApp para confirmar.</p>
+      </div>
+      <form data-quick-form>
+        <div class="field">
+          <label for="q-servicio">Servicio</label>
+          <select id="q-servicio" name="servicio">
+            {CATEGORIAS.map((c) => (
+              <optgroup label={c.nombre}>
+                {SERVICIOS.filter((s) => s.categoria === c.id).map((s) => <option value={s.nombre}>{s.nombre}</option>)}
+              </optgroup>
+            ))}
+          </select>
+        </div>
+        <div class="field">
+          <label for="q-sede">Sede</label>
+          <select id="q-sede" name="sede">
+            {SEDES.map((s) => <option value={s.nombre}>{s.nombre.replace('Sede ', '')}</option>)}
+          </select>
+        </div>
+        <div class="field">
+          <label for="q-fecha">Día</label>
+          <input id="q-fecha" name="fecha" type="date" />
+        </div>
+        <div class="field">
+          <label for="q-nombre">Tu nombre</label>
+          <input id="q-nombre" name="nombre" autocomplete="given-name" placeholder="Ej. Valeria" />
+        </div>
+        <button class="btn btn-wa" type="submit"><Icon name="whatsapp" />Reservar</button>
+      </form>
+    </div>
+
+    <div class="perks">
+      <div class="perk reveal"><span class="ico"><Icon name="crown" /></span><div><strong>Trato de reina</strong><span>Un espacio rosa y cómodo para relajarte mientras te atendemos.</span></div></div>
+      <div class="perk reveal"><span class="ico"><Icon name="image" /></span><div><strong>Trae tu diseño</strong><span>Nos pasas la foto y lo hacemos realidad.</span></div></div>
+      <div class="perk reveal"><span class="ico"><Icon name="clock" /></span><div><strong>Abierto todos los días</strong><span>Lunes a domingo, de 10 a. m. a 8 p. m.</span></div></div>
+      <div class="perk reveal"><span class="ico"><Icon name="pin" /></span><div><strong>2 sedes en Comas</strong><span>Santa Luzmila y La Pascana, en Lima Norte.</span></div></div>
+    </div>
+  </div>
+
+  <!-- NOSOTRAS -->
+  <section class="section about" id="nosotras">
+    <div class="wrap">
+      <div class="about-media reveal">
+        <div class="main"><img src="/assets/img/salon-interior.webp" alt="Interior rosado del salón Gail Girls con manicuristas atendiendo" width="720" height="900" loading="lazy" /></div>
+        <div class="float"><img src="/assets/img/frances-floral.webp" alt="Uñas francesas con flores" width="1000" height="1250" loading="lazy" /></div>
+      </div>
+      <div class="about-text reveal">
+        <span class="eyebrow">Conoce Gail Girls</span>
+        <div class="section-head" style="margin-bottom:20px">
+          <h2>Un salón hecho para que <em>brilles</em></h2>
+        </div>
+        <p>Somos un salón de belleza en Comas, creado por Abby Pardo, con un propósito claro: que cada clienta salga sintiéndose una reina. Nos especializamos en uñas, cejas y pestañas, y también te consentimos con faciales, mascarillas, pigmentaciones, depilaciones y pedicure.</p>
+        <p>Nos encanta estar en tus momentos más especiales: tu cumpleaños, tu baby shower, una graduación o simplemente un día para ti.</p>
+        <ul class="about-list">
+          <li><Icon name="check" />Acrílicas, polygel, softgel y semipermanente</li>
+          <li><Icon name="check" />Diseños a pedido: tú pones la idea, nosotras el arte</li>
+          <li><Icon name="check" />Extensiones y lifting de pestañas</li>
+        </ul>
+        <p class="signature">— Gail Girls, by Abby Pardo</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICIOS -->
+  <section class="section services" id="servicios">
+    <div class="wrap">
+      <div class="section-head center reveal">
+        <span class="eyebrow">Nuestros servicios</span>
+        <h2>Elige lo que quieres <em>hacerte</em></h2>
+        <p>Agrega uno o varios servicios a tu cita y envíanos todo junto por WhatsApp. Te confirmamos precio y horario al toque.</p>
+      </div>
+
+      <div class="tabs" role="tablist" aria-label="Categorías de servicios">
+        <button class="tab" role="tab" type="button" aria-selected="true" data-tab="todos">Todos</button>
+        {CATEGORIAS.map((c) => (
+          <button class="tab" role="tab" type="button" aria-selected="false" data-tab={c.id}><Icon name={c.icono} />{c.nombre}</button>
+        ))}
+      </div>
+
+      <div class="service-grid" data-service-grid>
+        {SERVICIOS.map((s) => (
+          <article class="service" data-cat={s.categoria}>
+            {s.etiqueta && <span class:list={['tag', { 'tag-promo': s.etiqueta === 'En promo' }]}>{s.etiqueta}</span>}
+            <h3>{s.nombre}</h3>
+            <p>{s.detalle}</p>
+            <div class="service-foot">
+              {s.precio ? <span class="price">{s.precio}</span> : <span class="price consult">Consulta precio</span>}
+              <button class="add-btn" type="button" data-add={s.id} aria-label={`Agregar ${s.nombre} a mi cita`}>
+                <Icon name="plus" /><span>Agregar</span>
+              </button>
+            </div>
+          </article>
+        ))}
+      </div>
+      <p class="services-note">Los precios varían según técnica, largo y diseño. Escríbenos con tu idea y te cotizamos sin compromiso.</p>
+    </div>
+  </section>
+
+  <!-- DISEÑOS -->
+  <section class="section" id="disenos">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow">Inspírate</span>
+        <h2>Diseños que <em>enamoran</em></h2>
+        <p>Trabajos reales de nuestras manicuristas. ¿Te gustó uno? Pídelo con un clic.</p>
+      </div>
+      <div class="chips" role="group" aria-label="Filtrar diseños">
+        {FILTROS_DISENO.map((f, i) => <button class="chip" type="button" aria-pressed={i === 0 ? 'true' : 'false'} data-filter={f.id}>{f.nombre}</button>)}
+      </div>
+      <div class="gallery">
+        {DISENOS.map((d) => (
+          <figure class="design reveal" data-group={d.filtro} style="margin:0">
+            <img src={d.img} alt={d.alt} width="1000" height="1250" loading="lazy" />
+            <figcaption class="design-info">
+              <h3>{d.nombre}</h3>
+              <a class="btn" href={waLink(`¡Hola Gail Girls! 💅 Vi el diseño "${d.nombre}" en su web y quisiera reservar (${nombreServicio(d.servicio)}).`)} target="_blank" rel="noopener">Lo quiero</a>
+            </figcaption>
+          </figure>
+        ))}
+        <div class="design-cta reveal">
+          <Icon name="image" class="big" />
+          <h3>¿Tienes tu propio diseño?</h3>
+          <p>Mándanos la foto por WhatsApp y lo hacemos realidad.</p>
+          <a class="btn btn-sm" href={waLink('¡Hola Gail Girls! 💅 Tengo un diseño que quiero hacerme, les envío la foto:')} target="_blank" rel="noopener"><Icon name="whatsapp" />Enviar mi diseño</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FORMAS -->
+  <section class="section shapes" style="padding-top:0">
+    <div class="wrap">
+      <div class="shapes-img reveal"><img src="/assets/img/formas-unas.webp" alt="Formas de uñas: ballerina, almendrada, cuadrada y stiletto" width="1000" height="1250" loading="lazy" /></div>
+      <div class="reveal">
+        <div class="section-head" style="margin-bottom:0">
+          <span class="eyebrow">Guía rápida</span>
+          <h2>¿Team coffin, almendrada, cuadrada o <em>stiletto</em>?</h2>
+          <p>Cada forma tiene su encanto y cambia por completo el look de tus uñas. Elige la tuya o déjate asesorar en tu cita.</p>
+        </div>
+        <div class="shape-list">
+          {formas.map((f) => (
+            <div class="shape">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><path d={f.d} /></svg>
+              <strong>{f.nombre}</strong><span>{f.alias}</span>
+            </div>
+          ))}
+        </div>
+        <a class="btn btn-primary" href={waLink('¡Hola Gail Girls! 💅 Quiero asesoría para elegir la forma de mis uñas.')} target="_blank" rel="noopener"><Icon name="whatsapp" />Quiero asesoría</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROMOS Y NOVEDADES -->
+  <section class="section promos" id="promos">
+    <div class="wrap">
+      <div class="section-head center reveal">
+        <span class="eyebrow">Promos y novedades</span>
+        <h2>Lo que está <em>en tendencia</em></h2>
+        <p>Pregúntanos por las promos vigentes: tenemos catálogo con muchos modelos en promoción.</p>
+      </div>
+      <div class="promo-grid">
+        <article class="promo reveal">
+          <img src="/assets/img/hero-baby-boomer.webp" alt="" loading="lazy" />
+          <span class="label">En promo</span>
+          <h3>Baby boomer</h3>
+          <p>El degradado más elegante. Pide nuestro catálogo con modelos en promoción.</p>
+          <a class="btn btn-sm" href={waLink('¡Hola Gail Girls! 💅 Quisiera ver el catálogo de baby boomer en promo.')} target="_blank" rel="noopener">Ver catálogo en promo</a>
+        </article>
+        <article class="promo reveal">
+          <img src="/assets/img/pestanas.webp" alt="" loading="lazy" />
+          <span class="label">Desde S/ 55</span>
+          <h3>Extensiones de pestañas</h3>
+          <p>Pelo a pelo, para una mirada que cambia todo.</p>
+          <a class="btn btn-sm" href={waLink('¡Hola Gail Girls! ✨ Quisiera reservar extensiones de pestañas (desde S/ 55).')} target="_blank" rel="noopener">Reservar</a>
+        </article>
+        <article class="promo reveal">
+          <img src="/assets/img/baby-shower.webp" alt="" loading="lazy" />
+          <span class="label">Novedad</span>
+          <h3>Uñas baby shower</h3>
+          <p>Tonos pastel y piecitos para celebrar a lo grande.</p>
+          <a class="btn btn-sm" href={waLink('¡Hola Gail Girls! 🍼 Quisiera reservar uñas para mi baby shower.')} target="_blank" rel="noopener">Lo quiero</a>
+        </article>
+      </div>
+      <div class="promo-follow reveal">
+        <span>Las campañas y nuevas colecciones salen primero en nuestras redes</span>
+        <a class="btn btn-ghost btn-sm" href={NEGOCIO.instagram} target="_blank" rel="noopener"><Icon name="instagram" />@gailgirls</a>
+        <a class="btn btn-ghost btn-sm" href={NEGOCIO.facebook} target="_blank" rel="noopener"><Icon name="facebook" />Facebook</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- EQUIPO -->
+  <section class="section team">
+    <div class="wrap">
+      <div class="reveal">
+        <span class="eyebrow">Nuestro equipo</span>
+        <div class="section-head" style="margin-bottom:0">
+          <h2>Ellas son las artistas, y esto es <em>su arte</em></h2>
+          <p>Personalidades distintas, un mismo equipo. Conoce a las Gail Girls de la sede Santa Luzmila. ¿Con cuál te atiendes tú?</p>
+        </div>
+        <div class="names">{EQUIPO.map((n) => <span>{n}</span>)}</div>
+        <a class="btn btn-primary" href={waLink('¡Hola Gail Girls! 💅 Quisiera reservar con mi manicurista de siempre: ')} target="_blank" rel="noopener"><Icon name="whatsapp" />Reservar con mi manicurista</a>
+      </div>
+      <div class="team-photo reveal"><img src="/assets/img/equipo-santa-luzmila.webp" alt="Las manicuristas de Gail Girls sede Santa Luzmila con uniforme rosado" width="1000" height="1000" loading="lazy" /></div>
+    </div>
+  </section>
+
+  <!-- CÓMO RESERVAR -->
+  <section class="section" id="como-reservar" style="padding-top:0">
+    <div class="wrap">
+      <div class="section-head center reveal">
+        <span class="eyebrow">Así de fácil</span>
+        <h2>Reserva tu cita en <em>3 pasos</em></h2>
+      </div>
+      <div class="steps">
+        <div class="step reveal"><span class="ico"><Icon name="sparkle" /></span><h3>Elige</h3><p>Agrega los servicios a “Mi cita” o elige un diseño de la galería. ¿Tienes tu propia idea? También vale.</p></div>
+        <div class="step reveal"><span class="ico"><Icon name="whatsapp" /></span><h3>Escríbenos</h3><p>Te llega todo listo a WhatsApp. Te confirmamos precio, día y hora.</p></div>
+        <div class="step reveal"><span class="ico"><Icon name="crown" /></span><h3>Disfruta</h3><p>Te esperamos en tu sede de Comas. Relájate, que del resto nos encargamos nosotras.</p></div>
+      </div>
+
+      <div class="faq reveal">
+        <h3 class="faq-title">Preguntas frecuentes</h3>
+        {faq.map((f) => (
+          <details><summary>{f.q}</summary><p>{f.a}</p></details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- SEDES -->
+  <section class="section" id="sedes" style="padding-top:0">
+    <div class="wrap">
+      <div class="section-head center reveal">
+        <span class="eyebrow">Nuestras sedes</span>
+        <h2>Te esperamos en <em>Comas</em></h2>
+        <p>{NEGOCIO.horario}, en las dos sedes.</p>
+      </div>
+      <div class="locations">
+        {SEDES.map((s) => (
+          <article class="location reveal">
+            <iframe src={mapaEmbed(s.mapa)} title={`Mapa de ${s.nombre}`} loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            <div class="location-body">
+              <h3>{s.nombre}</h3>
+              <div class="location-row"><Icon name="pin" /><span>{s.direccion}<br />{s.distrito}</span></div>
+              <div class="location-row"><Icon name="clock" /><span>{NEGOCIO.horarioCorto}</span></div>
+              <div class="location-actions">
+                <a class="btn btn-ghost btn-sm" href={mapaLink(s.mapa)} target="_blank" rel="noopener"><Icon name="pin" />Cómo llegar</a>
+                <a class="btn btn-wa btn-sm" href={waLink(`¡Hola Gail Girls! 💅 Quisiera reservar una cita en la ${s.nombre}.`)} target="_blank" rel="noopener"><Icon name="whatsapp" />Reservar aquí</a>
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACTO -->
+  <section id="contacto">
+    <div class="wrap">
+      <div class="contact-box reveal">
+        <div class="contact-info">
+          <img class="mark" src="/assets/img/logo-mark.png" alt="" />
+          <span class="eyebrow" style="color:var(--gold-soft)">Contáctanos</span>
+          <h2>¿Lista para tu próximo set?</h2>
+          <p>Escríbenos y te ayudamos a elegir. Respondemos por WhatsApp y por mensaje directo.</p>
+          <a class="contact-item" href={waLink('¡Hola Gail Girls! 💅')} target="_blank" rel="noopener"><span class="ico"><Icon name="whatsapp" /></span><div><small>WhatsApp y llamadas</small><span>{NEGOCIO.telefono}</span></div></a>
+          <a class="contact-item" href={`mailto:${NEGOCIO.correo}`}><span class="ico"><Icon name="mail" /></span><div><small>Correo</small><span>{NEGOCIO.correo}</span></div></a>
+          <a class="contact-item" href={NEGOCIO.instagram} target="_blank" rel="noopener"><span class="ico"><Icon name="instagram" /></span><div><small>Instagram</small><span>@gailgirls</span></div></a>
+          <a class="contact-item" href={NEGOCIO.facebook} target="_blank" rel="noopener"><span class="ico"><Icon name="facebook" /></span><div><small>Facebook</small><span>Gail Girls · Comas</span></div></a>
+        </div>
+        <form class="contact-form" data-contact-form>
+          <h3>Envíanos tu consulta</h3>
+          <p>Se abrirá WhatsApp con tu mensaje listo para enviar.</p>
+          <div class="field"><label for="c-nombre">Nombre</label><input id="c-nombre" name="nombre" autocomplete="name" required /></div>
+          <div class="field">
+            <label for="c-sede">Sede</label>
+            <select id="c-sede" name="sede">
+              <option value="">Cualquiera</option>
+              {SEDES.map((s) => <option value={s.nombre}>{s.nombre.replace('Sede ', '')}</option>)}
+            </select>
+          </div>
+          <div class="field full">
+            <label for="c-servicio">¿Qué te interesa?</label>
+            <select id="c-servicio" name="servicio">
+              <option value="">Solo una consulta</option>
+              {SERVICIOS.map((s) => <option value={s.nombre}>{s.nombre}</option>)}
+            </select>
+          </div>
+          <div class="field full"><label for="c-mensaje">Mensaje</label><textarea id="c-mensaje" name="mensaje" placeholder="Cuéntanos qué diseño tienes en mente, el largo, la ocasión…" required></textarea></div>
+          <button class="btn btn-wa full" type="submit"><Icon name="whatsapp" />Enviar por WhatsApp</button>
+        </form>
+      </div>
+    </div>
+  </section>
+</Base>
